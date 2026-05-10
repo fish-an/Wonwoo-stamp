@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>數位集章卡</title>
+    <style>
+        :root {
+            --bg-color: #0f0f0f;
+            --accent-color: #00f2ff;
+            --text-color: #ffffff;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'PingFang TC', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+        h1 { letter-spacing: 4px; font-weight: 300; margin-bottom: 40px; }
+        
+        input#nickname {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #333;
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            outline: none;
+            margin-bottom: 50px;
+        }
+        input#nickname:focus { border-bottom-color: var(--accent-color); }
+
+        .stamp-grid {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 50px;
+        }
+        .stamp-box {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        /* 鑽石風格 */
+        .diamond { transform: rotate(45deg); }
+        .diamond span { transform: rotate(-45deg); font-size: 0.8rem; color: #555; }
+
+        .stamp-box.active {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+        .stamp-box.completed::after {
+            content: "✓";
+            position: absolute;
+            font-size: 2rem;
+            color: var(--accent-color);
+            transform: rotate(-45deg); /* 抵銷鑽石旋轉 */
+        }
+
+        #reward-msg {
+            display: none;
+            background: var(--accent-color);
+            color: black;
+            padding: 15px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>STAMP CARD</h1>
+    
+    <input type="text" id="nickname" placeholder="ENTER NICKNAME" autocomplete="off">
+
+    <div class="stamp-grid">
+        <div class="stamp-box diamond" id="slot1" onclick="handleStamp(1)"><span>01</span></div>
+        <div class="stamp-box diamond" id="slot2" onclick="handleStamp(2)"><span>02</span></div>
+        <div class="stamp-box diamond" id="slot3" onclick="handleStamp(3)"><span>03</span></div>
+    </div>
+
+    <div id="reward-msg" onclick="redeem()">點擊兌換小禮物</div>
+</div>
+
+<script>
+    // 預設密碼 (可改為從後台獲取)
+    const CORRECT_CODES = { 1: "111", 2: "222", 3: "333" };
+    let stamps = { 1: false, 2: false, 3: false };
+
+    function handleStamp(id) {
+        if (stamps[id]) return;
+        
+        const code = prompt(`請工作人員輸入第 ${id} 關驗證碼:`);
+        if (code === CORRECT_CODES[id]) {
+            stamps[id] = true;
+            const element = document.getElementById(`slot${id}`);
+            element.classList.add('active', 'completed');
+            checkCompletion();
+        } else if (code !== null) {
+            alert("代碼錯誤");
+        }
+    }
+
+    function checkCompletion() {
+        if (stamps[1] && stamps[2] && stamps[3]) {
+            document.getElementById('reward-msg').style.display = 'block';
+        }
+    }
+
+    function redeem() {
+        const name = document.getElementById('nickname').value || "訪客";
+        alert(`恭喜 ${name}！請向櫃檯出示此畫面領取禮物。`);
+        // 這裡可以串接 API 發送兌換紀錄到後台
+    }
+</script>
+
+</body>
+</html>
