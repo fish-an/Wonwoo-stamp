@@ -5,22 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STAMP EVENT</title>
     <style>
-        body { background: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        body { background: #000; color: #fff; font-family: -apple-system, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
         .card { width: 320px; text-align: center; }
-        h2 { letter-spacing: 6px; font-weight: 300; margin-bottom: 50px; color: #fff; }
-        input { background: transparent; border: none; border-bottom: 1px solid #333; color: #fff; width: 80%; padding: 12px; text-align: center; margin-bottom: 50px; outline: none; font-size: 1rem; }
+        h2 { letter-spacing: 6px; font-weight: 300; margin-bottom: 50px; }
+        input { background: transparent; border: none; border-bottom: 2px solid #555; color: #fff; width: 80%; padding: 12px; text-align: center; margin-bottom: 50px; outline: none; font-size: 1rem; }
         input:focus { border-bottom-color: #00ffcc; }
         .grid { display: flex; justify-content: space-around; margin-bottom: 60px; }
-        .box { width: 70px; height: 70px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; transform: rotate(45deg); position: relative; transition: 0.4s; }
-        .box span { transform: rotate(-45deg); font-size: 10px; color: #444; letter-spacing: 1px; }
+        /* 強化邊框：線條加粗至 2px，顏色改亮一點的灰色 */
+        .box { width: 70px; height: 70px; border: 2px solid #666; display: flex; align-items: center; justify-content: center; transform: rotate(45deg); position: relative; transition: 0.4s; }
+        .box span { transform: rotate(-45deg); font-size: 10px; color: #888; font-weight: bold; }
         
-        /* 蓋章後的樣式 */
-        .box.active { border-color: #00ffcc; box-shadow: 0 0 20px rgba(0, 255, 204, 0.4); background: rgba(0, 255, 204, 0.05); }
+        /* 達成後的樣式 */
+        .box.active { border-color: #00ffcc; box-shadow: 0 0 20px rgba(0, 255, 204, 0.6); background: rgba(0, 255, 204, 0.1); }
         .box.active span { color: #00ffcc; }
         .box.active::after { content: "✦"; transform: rotate(-45deg); color: #00ffcc; position: absolute; font-size: 24px; text-shadow: 0 0 10px #00ffcc; }
         
-        #btn { display: none; width: 100%; padding: 18px; background: transparent; border: 1px solid #00ffcc; color: #00ffcc; cursor: pointer; letter-spacing: 2px; font-weight: bold; border-radius: 4px; transition: 0.3s; }
-        #btn:active { background: #00ffcc; color: #000; }
+        #btn { display: none; width: 100%; padding: 18px; background: transparent; border: 2px solid #00ffcc; color: #00ffcc; cursor: pointer; letter-spacing: 2px; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -34,33 +34,29 @@
         </div>
         <button id="btn" onclick="redeem()">REDEEM GIFT</button>
     </div>
-
     <script>
-        // 設定好的新密碼
         const PWS = { 1: "1996", 2: "0717", 3: "WWW" };
         let s = [false, false, false];
-
+        
         function v(id) {
-            if (s[id-1]) return; // 如果已經蓋過章就跳過
-            let p = prompt(`請工作人員輸入第 ${id} 關代碼`);
+            if (s[id-1]) return;
+            
+            // 針對第 1, 2 格與第 3 格顯示不同的提示文字
+            let msg = (id === 1 || id === 2) ? "請自行輸入密碼" : `請輸入第 ${id} 關代碼`;
+            let p = prompt(msg);
+            
             if (p === PWS[id]) {
                 s[id-1] = true;
                 document.getElementById('b'+id).classList.add('active');
-                check();
+                if (s.every(x => x)) document.getElementById('btn').style.display = 'block';
             } else if (p !== null) { 
-                alert("代碼錯誤，請重新輸入"); 
+                alert("代碼錯誤"); 
             }
         }
-
-        function check() {
-            if (s.every(x => x)) {
-                document.getElementById('btn').style.display = 'block';
-            }
-        }
-
+        
         function redeem() {
             const name = document.getElementById('nn').value || "訪客";
-            alert(`恭喜 ${name}！請出示此畫面給工作人員換取禮物。`);
+            alert(`恭喜 ${name}！請出示此畫面領取禮物。`);
         }
     </script>
 </body>
